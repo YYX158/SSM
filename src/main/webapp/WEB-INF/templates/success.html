@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>成功</title>
+</head>
+<body>
+<h1>success</h1>
+<p th:text="${testRequesScope}"/>
+<!--
+     thymeleaf中要想获取session域中的数据，必须使用session.的方式
+     要获取应用域中的数据就必须使用application.的方式
+-->
+<p th:text="${session.testRequesScope}"/>
+<p th:text="${application.testApplication}"/>
+</body>
+</html>

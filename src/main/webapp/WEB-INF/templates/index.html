@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+<h1>index.html</h1>
+<!--用thymeleaf的语法会自动将上下文路径加入-->
+<a th:href="@{/hello}">测试SpringMVC</a>
+<a href="/hello">测试绝对路径</a>
+<hr/>
+<form th:action="@{/param/servletAPI}" method="post">
+    用户名:<input type="text" name="username"><br/>
+    密&nbsp;&nbsp;码:<input type="password" name="password"><br/>
+    <input type="submit" value="登录"><br/>
+</form>
+<a th:href="@{/test/mav}">测试通过ModelAndView向请求域中共享数据</a><br/>
+<a th:href="@{/test/session}">测试向着会话域共享数据</a><br/>
+<a th:href="@{/test/application}">测试向着应用域共享数据</a><br/>
+<hr/>
+<a th:href="@{/test/view/thymeleaf}">测试SpringMVC的视图ThymeleafView</a><br/>
+<a th:href="@{/test/view/foward}">测试SpringMVC的视图InternalResourceView</a><br/>
+<a th:href="@{/test/view/redirect}">测试SpringMVC的视图RedirectView</a>
+<hr/>
+<h1>Rest风格测试</h1>
+<a th:href="@{/user}">查询所有的用户信息</a><br/>
+<a th:href="@{/user/1}">查询id=1的用户信息</a><br/>
+<form th:action="@{/user}" method="post">
+    <input type="submit" value="添加用户信息-post">
+</form>
+<br/>
+<form th:action="@{/user}" method="post">
+    <input type="hidden" name="_method" value="put">
+    <input type="submit" value="修改用户信息-put">
+</form>
+<br/>
+<form th:action="@{/user/5}" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="删除用户信息-delete">
+</form>
+<hr>
+<a th:href="@{/employee}">查询所有的员工信息</a>
+<hr/>
+<div id="app">
+    <input type="button" value="测试SpringMVC处理ajax请求" @click="testAjax()"><br/>
+    <input type="button" value="使用@RequestBody注解处理json格式的请求参数(转换成实体类对象)" @click="testRequestBody()">
+    <input type="button" value="使用@RequestBody注解处理json格式的请求参数(转换成Map)" @click="testRequestBodyMap()">
+</div>
+
+<hr/>
+<a th:href="@{/test/ResponseBody}">测试@ResponseBody注解相应浏览器数据</a>
+<hr/>
+<a th:href="@{/test/download}">下载图片</a>
+<!--
+     文件上传必须要有文件域，而且要上传文件必须要用post请求
+     multipart/form-data设置上传的文件是以二进制上传
+-->
+<br/>
+<form th:action="@{/test/up}" method="post" enctype="multipart/form-data">
+    头像&nbsp;<input type="file" name="photo"><br/>
+    <input type="submit" value="上传">
+</form>
+
+<script type="text/javascript" th:src="@{/js/vue.js}"></script>
+<script type="text/javascript" th:src="@{/js/axios.min.js}"></script>
+<script type="text/javascript">
+    var vue=new Vue({
+        el:"#app",
+        methods:
+         {
+            testAjax()
+            {
+                // axios({
+                //     url:"",// 设置请求的url路径
+                //     method:"",// 设置请求方式
+                //  此种方式的请求参数可以通过request，getParameter()去获取
+                //     params:{},// 设置请求参数   以namename=value&name=value的方式发送的请求参数
+                //不管使用的请求方式是get请求还是post请求，请求参数都会被拼接到请求地址后面
+                //     data:{}   // 以json格式发送请求参数,请求参数会被保存到请求报文中的请求体中，然后发送给服务器
+                // json的数据先获取请求体，然后在利用第三方jar包去解析
+                // }).then(response=>{ // 处理服务器返回的数据
+                //
+                // })
+
+                axios.post(
+                    "/springmvc/test/ajax?id=1001",
+                    {username:"admin",password:"123456"}
+                ).then(response=>{
+                    console.log(response.data)
+                });
+            },
+            testRequestBody()
+            {
+                axios.post(
+                    "/springmvc/test/RequestBody/json",
+                    {username:"admin",password:"123456",age:23,gender:"男"}
+                ).then(response=>{
+                    console.log(response.data)
+                });
+            },
+
+             testRequestBodyMap()
+             {
+                 axios.post(
+                     "/springmvc/test/RequestBody/jsonMap",
+                     {username:"admin",password:"123456",age:23,gender:"男"}
+                 ).then(response=>{
+                     console.log(response.data)
+                 });
+             }
+        },
+
+    });
+</script>
+</body>
+</html>
