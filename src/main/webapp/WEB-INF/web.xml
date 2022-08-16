@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:web="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="WebApp_ID" version="3.0" metadata-complete="true">
+
+    <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <!--设置请求的编码类型-->
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <!--这样子设置以后响应的编码类型也是UTF-8-->
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--
+        设置处理请求方式的过滤器
+        要注意处理编码请求的过滤器必须放在最前面
+    -->
+    <filter>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <!--表示对所有的请求都进行处理-->
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--配置SpringMVC的前端控制器DispatchServlet-->
+    <servlet>
+        <servlet-name>SpringMVC</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--设置SpringMVC的配置文件的位置和名称-->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:springmvc.xml</param-value>
+        </init-param>
+        <!--
+            将Servelet初始化的时候的事件记录到服务器启动的时候
+            Servlet的生命周期一共有三个步骤
+            ①初始化：Servlet初始化默认是在第一次访问的时候初始化的
+            ②服务：
+            ③销毁
+            将load-on-startup的值设置为1的意思就是说将DispatcherSerblect的初始化时间提前到服务器启动时
+        -->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SpringMVC</servlet-name>  <!--default是指tomcat中配置的-->
+        <!--
+            /*:表示所有的请求的都给处理
+            /hello表示只有hello请求能给处理
+            *.do  表示后缀匹配，发过来的请求是以do结尾的表示要给前端控制器处理
+            jsp的本质就是servlet
+            jsp的请求只能交给JspServlet
+            url-pattern中  /和/*的区别
+            /: 匹配浏览器向服务器发送的所有请求（不包括.jsp)
+            /*: 匹配浏览器向服务器发送的所有请求（包括.jsp)
+            jsp的执行过程：
+            需要先将jsp->servlet->将jsp页面的内容以相应的方式发送给浏览器，DispatcherServlet无法处理
+
+            SpringMVC的配置文件默认的位置和名称
+            位置： WEB-INF 下
+            名称：<servlet-name>-servlet.xml
+            当前配置下的配置文件的配置文件名为SpringMVC-servlet.xml
+
+        -->
+        <url-pattern>/</url-pattern>  <!--SpringMVC用来处理的前端路径-->
+    </servlet-mapping>
+</web-app>
